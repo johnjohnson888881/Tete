@@ -1,0 +1,477 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#alien-countdown {
+    font-family: monospace;
+    font-size: 5rem;
+    color: #fff;
+    text-shadow: 0 0 10px #fff;
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.3;
+    }
+}
+
+#wormhole-button {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: none;
+    /* Only hide default cursor */
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+
+#custom-cursor {
+    position: fixed;
+    font-size: 24px;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    color: white;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    /* Reset to center */
+    background: transparent;
+    /* Remove overlay background */
+    padding-top: 0;
+    /* Remove top padding */
+}
+
+.popup-content {
+    background: transparent;
+    padding: 4rem;
+    /* Increased padding */
+    border: none;
+    /* Remove border */
+    text-align: center;
+    color: white;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    height: 100vh;
+    justify-content: center;
+}
+
+.countdown {
+    font-size: 4rem;
+    /* Increased from 2rem to 4rem */
+    margin: 2rem 0;
+    /* Increased margin */
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    /* Increased glow effect */
+    letter-spacing: 0.5rem;
+    /* Add spacing between characters */
+    position: absolute;
+    top: 35vh;
+    /* Adjusted to 35vh */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.scrambled-text {
+    font-family: monospace;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.2rem;
+    /* Removed animation property */
+    position: absolute;
+    bottom: 35vh;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    user-select: all;
+    /* Makes text selectable */
+}
+
+.scrambled-text:active {
+    opacity: 0.5;
+    /* Visual feedback on click */
+}
+
+/* Remove the @keyframes flicker block */
+
+.x-link {
+    color: white;
+    font-size: 24px;
+    /* Increased from 20px for better visibility */
+    text-decoration: none;
+    font-family: monospace;
+    /* Changed to match other icons */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.x-link:hover {
+    transform: scale(1.2);
+    text-shadow: 0 0 15px white;
+}
+
+.wallet-container {
+    color: white;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.wallet-icon {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.wallet-icon:hover {
+    transform: scale(1.2);
+    text-shadow: 0 0 15px white;
+}
+
+.social-container {
+    position: absolute;
+    bottom: 25vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    /* Center align items vertically */
+    justify-content: center;
+    /* Add this to center horizontally */
+    gap: 64px;
+    z-index: 20;
+    margin-left: 0;
+    /* Remove the negative margin */
+    height: 24px;
+    /* Add fixed height */
+    width: 100%;
+    /* Add width to ensure full container width */
+}
+
+/* Add these new styles */
+.text-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    z-index: 2001;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+}
+
+.text-content {
+    color: white;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    height: 60vh;
+    overflow-y: auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-bottom: 15px;
+    white-space: pre-line;
+}
+
+.text-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.text-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.text-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.text-popup .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Add this style for the text toggle icon */
+#textToggle {
+    font-family: monospace;
+    content: "☰";
+    /* Using a simpler symbol instead of emoji */
+    color: white;
+    font-size: 24px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#textToggle:hover {
+    transform: scale(1.2);
+    text-shadow: 0 0 15px white;
+}
+
+/* Add new login styles */
+#login-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.login-form input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem;
+    margin: 1rem 0;
+    width: 200px;
+    font-family: monospace;
+    text-align: center;
+}
+
+.login-form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.login-error {
+    color: #ff4444;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+/* Update the zoom-transition class and add new keyframes */
+.zoom-transition {
+    animation: zoomIn 1.5s ease-in forwards;
+    background: black;
+    /* Add this */
+    border-radius: 50%;
+    /* Add this */
+}
+
+@keyframes zoomIn {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        background: transparent;
+    }
+
+    30% {
+        transform: translate(-50%, -50%) scale(2);
+        background: black;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(50);
+        background: black;
+    }
+}
+
+/* Add these styles for the pledges view */
+.pledges-view {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 2000;
+}
+
+.pledges-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.pledges-header {
+    font-size: 3rem;
+    letter-spacing: 0.5rem;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    padding: 10px;
+    z-index: 2100;
+}
+
+.back-button:hover {
+    transform: scale(1.2);
+    text-shadow: 0 0 15px white;
+}
+
+.fade-in {
+    animation: fadeIn 1s forwards;
+}
+
+.fade-out {
+    animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .login-form input {
+        width: 180px;
+        font-size: 14px;
+        padding: 0.4rem;
+    }
+
+    #custom-cursor {
+        display: none;
+        /* Hide custom cursor on mobile */
+    }
+
+    #wormhole-button {
+        width: 80px;
+        /* Smaller wormhole button */
+        height: 80px;
+    }
+
+    .text-popup {
+        width: 90%;
+        max-width: none;
+    }
+
+    .text-content {
+        font-size: 12px;
+        padding: 15px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .login-form input {
+        width: 160px;
+        font-size: 13px;
+    }
+
+    #wormhole-button {
+        width: 60px;
+        height: 60px;
+    }
+
+    #alien-countdown {
+        font-size: 3rem;
+    }
+}
